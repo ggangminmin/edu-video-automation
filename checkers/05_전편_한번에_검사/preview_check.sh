@@ -15,7 +15,7 @@ ffprobe -v error -show_entries stream=codec_type,codec_name,nb_frames,duration -
 python3 "$SUB/subbar_scan.py" "$P" subbar_$T.json && python3 "$SYN/runs.py" "$P" runs_$T.json 1 && ffmpeg -v info -i "$P" -map 0:v:0 -vf scale=480:-1,scdet=threshold=14 -f null - 2> scd_$T.log
 ffmpeg -v error -y -i "$P" -map 0:a:0 -ac 1 -ar 16000 dlg16k_$T.wav && whisper-cli -m ~/.cache/whisper-cpp/ggml-large-v3-turbo.bin -l ko -f dlg16k_$T.wav -ojf -of whisper_$T -ml 1 -sow -dtw large.v3.turbo > whisper_$T.log 2>&1
 python3 "$SYN/capsync.py" subbar_$T.json runs_$T.json scd_$T.log capsync_$T whisper_$T.json; sed -n '1,40p' capsync_$T.md
-echo "== black"; ffmpeg -v info -i "$P" -map 0:v:0 -vf blackdetect=d=0.03:pic_th=0.98 -f null - 2>&1 | grep black_start || echo "black 0"
+echo "== black"; if ffmpeg -v info -i "$P" -map 0:v:0 -vf blackdetect=d=0.03:pic_th=0.98 -f null - 2> black_$T.log; then grep black_start black_$T.log || echo "black 0"; else echo "ERROR 검은 화면 검사 실패(검사 안 함) — black_$T.log 확인"; tail -3 black_$T.log; exit 1; fi
 echo "== segs/gaps"; python3 - $T <<'PY'
 import json,sys,numpy as np
 T=sys.argv[1]; S=json.load(open(f'subbar_{T}.json'));bar=np.array(S['bar']);dark=np.array(S['dark']);FPS=S['fps']

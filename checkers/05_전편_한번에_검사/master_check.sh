@@ -10,7 +10,7 @@ if [ -z "$QA_SCREEN" ] || [ ! -f "$QA_SCREEN" ]; then
 fi
 set -e; R=${0:A:h:h}; M=${1:A}; D=${2:A}; T=$3
 SUB=$R/03_빈_자막바; SYN=$R/02_자막_싱크_늦게뜸_일찍꺼짐; PAS=$R/04_합격장면_그대로_들어갔나; CAP=$R/09_자막_글자_빠짐_바뀜_직전판과
-OUT=${OUT:-$HOME/Movies/video_qa/$T}; [ -n "$PASSED" ] && PASSED=${PASSED:A}; mkdir -p "$OUT/fr"; cd "$OUT"; [ -n "$PREVMP4" ] && PREVMP4=${PREVMP4:A}; echo "결과 폴더: $OUT · 화면 설정: $QA_SCREEN"
+OUT=${OUT:-$HOME/Movies/video_qa/$T}; [ -n "$PASSED" ] && PASSED=${PASSED:A}; [ -n "$PREVMP4" ] && PREVMP4=${PREVMP4:A}; mkdir -p "$OUT/fr"; cd "$OUT"; echo "결과 폴더: $OUT · 화면 설정: $QA_SCREEN"
 echo "== subbar"; python3 "$SUB/subbar_scan.py" "$M" subbar_$T.json
 echo "== runs";   python3 "$SYN/runs.py" "$D" runs_$T.json
 echo "== scdet";  ffmpeg -v info -i "$M" -map 0:v:0 -vf scale=480:-1,scdet=threshold=14 -f null - 2> scd_$T.log

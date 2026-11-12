@@ -11,6 +11,7 @@ runs=[];s=None
 for i,v in enumerate(sp):
     if v and s is None:s=i
     if not v and s is not None: runs.append([s,i]);s=None
+if s is not None: runs.append([s,len(sp)])   # 11/12: 말하다가 파일이 끝나면 마지막 구간이 빠지던 것
 m=[]
 for r in runs:
     if m and r[0]-m[-1][1]<8: m[-1][1]=r[1]

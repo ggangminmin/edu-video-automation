@@ -9,7 +9,7 @@ def _probe_fps(path, fallback=24000/1001):
         a,b = out.split('/'); return float(a)/float(b)
     except Exception:
         return fallback
-mp4=sys.argv[1];x,y,w,h=map(int,sys.argv[2].split(','))
+mp4=sys.argv[1];x,y,w,h=map(int,sys.argv[2].split('=')[-1].split(','))   # 11/12: face=x,y,w,h 와 x,y,w,h 둘 다 받는다
 raw=subprocess.run(['ffmpeg','-v','error','-i',mp4,'-vf','scale=480:270,format=gray','-f','rawvideo','-'],capture_output=True).stdout
 f=np.frombuffer(raw,np.uint8).reshape(-1,270,480).astype(np.int16)
 fx,fy,fw,fh=x//4,y//4,w//4,h//4

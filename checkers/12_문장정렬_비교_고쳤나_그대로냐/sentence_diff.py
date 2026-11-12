@@ -202,6 +202,16 @@ def main():
     ap.add_argument('--out', required=True)
     a = ap.parse_args()
     out = os.path.abspath(os.path.expanduser(a.out)); os.makedirs(f'{out}/stt', exist_ok=True); os.makedirs(f'{out}/cmp', exist_ok=True)
+    # 11/12: 같은 --out 에 다른 영상을 넣으면 옛 wav · 받아쓰기 · 프레임을 그대로 쓰던 것 → 입력 지문이 다르면 그 판의 중간 파일을 버린다.
+    import glob
+    sig = lambda p: [os.path.realpath(p), os.path.getsize(p), os.stat(p).st_mtime_ns]
+    stamp = f'{out}/inputs.json'; prev = json.load(open(stamp)) if os.path.exists(stamp) else {}
+    for tag, src in (('old', a.old), ('new', a.new)):
+        if prev.get(tag) != sig(src):
+            stale = glob.glob(f'{out}/stt/{tag}.*') + glob.glob(f'{out}/frames/{tag}_*.jpg')
+            for f in stale: os.remove(f)
+            if stale: print(f'[{tag}] 입력 영상이 지난번과 다르다(또는 기록 없음) → 중간 파일 {len(stale)}개 버리고 다시 만든다')
+    json.dump({'old': sig(a.old), 'new': sig(a.new)}, open(stamp, 'w'))
     wo, wn = wav16(a.old, f'{out}/stt/old.wav'), wav16(a.new, f'{out}/stt/new.wav')
     so = a.stt_old or stt(a.old, out, 'old'); sn = a.stt_new or stt(a.new, out, 'new')
     O, N = load_stt(so), load_stt(sn)
