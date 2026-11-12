@@ -8,7 +8,25 @@ AI 영상 크리에이터 강민석(minming)이 회사(플루닛)에서 맡은 �
 | **디애드 마루시공전문가 강의** (2026.10~11) | 04~20강 17편 | 강의별 조립 · 렌더 · 검사 스크립트 전부 (`maru-lecture/`) |
 | **국가데이터처 교육영상** (2026.9~10) | 8편 납품 | 여기서 처음 만든 검사기를 공통으로 다듬은 것 (`checkers/`) · 조립 코드는 납품 뒤 정리하며 지워서 없음 |
 
-![쓴 도구](maru-lecture/docs/영상자동화_도구_읽는법.png)
+## 쓴 도구
+
+이 저장소 코드에 실제로 들어 있는 것만 적었습니다(스크립트를 검색해 확인 · 숫자는 그 도구를 부르는 파일 수).
+
+| 도구 | 한 일 | 마루시공 | 검사기 |
+|---|---|---|---|
+| FFmpeg | 영상 · 음성 자르기 · 붙이기 · 렌더 · 인코딩 | 657 | 19 |
+| ffprobe | 길이 · 해상도 · 프레임 속도 읽기 | 141 | 7 |
+| FFmpeg atempo | 음성 속도 조절 | 66 | – |
+| FFmpeg chromakey / colorkey | 아나운서 영상 그린스크린 지우기 | 101 | – |
+| mlx-whisper | 받아쓰기로 단어마다 시각 재기(자막 싱크) | 220 | – |
+| whisper.cpp (whisper-cli) | 받아쓰기(대본 대조 · 검사) | 65 | 4 |
+| Python + NumPy | 자동화 스크립트 전체 · 숫자 계산 | 558 | 19 |
+| Pillow | 자막바 · 글자 이미지 만들기 | 258 | 2 |
+| python-pptx | PPT 메모에서 대본 뽑기 | 77 | – |
+| librosa · SciPy | 음성 분석 · 말 시작점 실측 | 38 · 20 | – |
+| OpenCV | 프레임 비교 | – | 1 |
+
+코드 밖에서 만들어 재료로 넣은 것: AI 강사 음성(Typecast) · 아나운서 영상(HeyGen). 이 둘을 부르는 코드는 없고, 결과 파일을 받아 조립합니다.
 
 ## 한 편이 만들어지는 순서 (마루시공)
 
@@ -44,7 +62,7 @@ PPT 메모(대본) ──▶ AI 강사 음성(Typecast)
 이 코드는 **실제 작업 폴더 경로를 그대로 쓰고 있어서** 받아서 바로 돌아가지는 않습니다(음성 · 슬라이드 · 영상 원본은 올리지 않았습니다).
 「어떤 단계를 어떤 방식으로 자동화했는지」를 보는 기록으로 읽어 주세요.
 
-필요한 것: Python 3 · FFmpeg · mlx-whisper(Apple Silicon) · Pillow · NumPy · OpenCV · python-pptx · Poppler.
+필요한 것: Python 3 · FFmpeg · mlx-whisper(Apple Silicon) · whisper.cpp · Pillow · NumPy · SciPy · librosa · OpenCV · python-pptx.
 
 ## 잘 안 된 것도 남깁니다
 
